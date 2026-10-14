@@ -1,0 +1,36 @@
+<?php
+
+namespace App\Providers;
+
+use App\Models\User;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\ServiceProvider;
+
+class AppServiceProvider extends ServiceProvider
+{
+    /**
+     * Register any application services.
+     */
+    public function register(): void
+    {
+        //
+    }
+
+    /**
+     * Bootstrap any application services.
+     */
+    public function boot(): void
+    {
+        Gate::define(
+            'manage-companies',
+            fn(User $user) =>
+                $user->isSuperAdmin()
+        );
+
+        Gate::define(
+            'manage-team',
+            fn(User $user) =>
+                $user->isAdmin() && $user->company_id !== null
+        );
+    }
+}
